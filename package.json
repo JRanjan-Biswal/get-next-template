@@ -1,0 +1,13 @@
+{
+    "name": "create-nextjs-template",
+    "version": "0.1.0",
+    "private": true,
+    "bin": {
+      "create-nextjs-template": "create-nextjs-template.mjs"
+    },
+    "dependencies": {
+      "@inquirer/select": "^1.2.11",
+      "ora": "^7.0.1"
+    }
+  }
+  

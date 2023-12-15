@@ -9,6 +9,7 @@ var buf = new Buffer.alloc(1024);
 import ora from "ora";
 import { firstBitHandler, readWriteFile, lastBitHanlder } from "./file-execution.mjs";
 import sassCreattion from "./utils/sass-creation.mjs";
+import fontPromise from "./utils/font.mjs";
 
 // convert libs to promises
 const exec = promisify(cp.exec);
@@ -26,21 +27,21 @@ const currentPath = process.cwd();
 const projectPath = path.join(currentPath, projectName);
 
 // on stop interrupt signal from terminal
-process.on('SIGINT', () => {
-    console.log("\nTerminating...");
-    setTimeout(() => {
+// process.on('SIGINT', () => {
+//     console.log("\nTerminating...");
+//     setTimeout(() => {
 
-    }, 10000)
-    fs.rmSync(projectPath, { recursive: true, force: true }, function (data, err) {
-        if (err) console.error(err)
-        console.log(data)
-    });
+//     }, 10000)
+//     fs.rmSync(projectPath, { recursive: true, force: true }, function (data, err) {
+//         if (err) console.error(err)
+//         console.log(data)
+//     });
 
-    if (!fs.existsSync(projectPath)) {
-        console.log('second')
-        process.exit(1)
-    }
-});
+//     if (!fs.existsSync(projectPath)) {
+//         console.log('second')
+//         process.exit(1)
+//     }
+// });
 
 // TODO: change to your boilerplate repo
 const git_repo = "https://github.com/JRanjan-Biswal/create-nextjs-template-code.git";
@@ -71,6 +72,8 @@ try {
     // remove the packages needed for cli
     await exec("npm uninstall ora cli-spinners");
     cleanSpinner.succeed();
+
+    await fontPromise()
 
     firstBitHandler(projectPath, 'next.config.js');
 
@@ -207,7 +210,7 @@ try {
 
 } catch (error) {
     // clean up in case of error, so the user does not have to do it manually
-    fs.rmSync('C:\My_Learning\all-test-case\test13', { recursive: true, force: true }, function (err) {
+    fs.rmSync(projectPath, { recursive: true, force: true }, function (err) {
         if (err) console.error(err)
     });
     console.log('testing here', projectPath)

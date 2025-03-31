@@ -1,7 +1,7 @@
 {
     "name": "create-nextjs-template",
     "version": "1.0.0",
-    "private": true,
+    "private": false,
     "bin": {
         "create-next-template": "create-nextjs-template.mjs"
     },

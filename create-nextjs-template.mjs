@@ -9,7 +9,7 @@ var buf = new Buffer.alloc(1024);
 import ora from "ora";
 import { firstBitHandler, readWriteFile, lastBitHanlder } from "./file-execution.mjs";
 import sassCreattion from "./utils/sass-creation.mjs";
-import fontPromise from "./utils/font.mjs";
+// import fontPromise from "./utils/font.mjs";
 
 // convert libs to promises
 const exec = promisify(cp.exec);
@@ -18,7 +18,7 @@ const rm = promisify(fs.rm);
 if (process.argv.length < 3) {
     console.log("You have to provide a name to your app.");
     console.log("For example :");
-    console.log("    npx simple-ts-app my-app");
+    console.log("    npx create-nextjs-template <--my app name-->");
     process.exit(1);
 }
 
@@ -44,7 +44,9 @@ const projectPath = path.join(currentPath, projectName);
 // });
 
 // TODO: change to your boilerplate repo
-const git_repo = "https://github.com/JRanjan-Biswal/create-nextjs-template-code.git";
+const git_repo_js = "https://github.com/JRanjan-Biswal/create-nextjs-app-template-code.git";
+const git_repo_ts = "https://github.com/JRanjan-Biswal/create-nextts-app-template-code.git";
+var nextConfigFile = 'next.config.mjs';
 
 // create project directory
 if (fs.existsSync(projectPath)) {
@@ -56,9 +58,33 @@ else {
 }
 
 try {
+    const codingLangSelector = await select({
+        message: 'Select a language',
+        choices: [
+            {
+                name: 'javascript',
+                value: 'js',
+                description: 'javaScript is a loosely typed (or weakly typed) language',
+            },
+            {
+                name: 'typescript',
+                value: 'ts',
+                description: 'typeScript is a strongly typed programming language that builds on javaScript',
+            }
+        ],
+    });
+
     const gitSpinner = ora("Downloading files...").start();
     // clone the repo into the project folder -> creates the new boilerplate
-    await exec(`git clone --depth 1 ${git_repo} ${projectPath} --quiet`);
+    if (codingLangSelector == 'ts') {
+        await exec(`git clone --depth 1 ${git_repo_ts} ${projectPath} --quiet`);
+        nextConfigFile = 'next.config.ts';
+    }
+    else {
+        await exec(`git clone --depth 1 ${git_repo_js} ${projectPath} --quiet`);
+        nextConfigFile = 'next.config.mjs';
+    }
+
     gitSpinner.succeed();
 
     const cleanSpinner = ora("Removing useless files").start();
@@ -73,9 +99,8 @@ try {
     await exec("npm uninstall ora cli-spinners");
     cleanSpinner.succeed();
 
-    await fontPromise()
-
-    firstBitHandler(projectPath, 'next.config.js');
+    // await fontPromise()
+    firstBitHandler(projectPath, nextConfigFile);
 
     const packageManager = await select({
         message: 'Select a package manager',
@@ -103,6 +128,22 @@ try {
             },
         ],
     });
+
+    // package manager dependency 
+    if (packageManager == 'yarn') {
+        await exec('yarn -v')
+            .catch(async err => {
+                console.log("\u001b[31m", err.message);
+                const cleanSpinner = ora("installing yarn globally...").start();
+                if (err.message.includes('recognized as an internal or external command'));
+                await exec('npm i --global yarn')
+                    .then(() => cleanSpinner.succeed("yarn installed successfully.."))
+                    .catch(err => {
+                        console.log("\u001b[31m", err.message);
+                        err.exit();
+                    })
+            });
+    }
 
     const styling = await select({
         message: 'Select a css processor',
@@ -153,25 +194,53 @@ try {
         ]
     })
 
+    const datePackage = await select({
+        message: 'Select a date package',
+        choices: [
+            {
+                name: 'none',
+                value: 'none',
+                description: 'no dependencies for slider will be installed'
+            },
+            {
+                name: 'Date Pack',
+                value: 'date-pack',
+                description: 'is a simple library, help in getting different formats e.g. (dd-mm-yyyy)'
+            },
+            {
+                name: 'Moment',
+                value: 'moment',
+                description: 'a js date library for parsing, validating, manipulating, and formatting dates.'
+            },
+            {
+                name: 'Date Fns',
+                value: 'date-fns',
+                description: 'date-fns provides toolset for manipulating js dates in a browser & node.js'
+            }
+        ]
+    })
+
+
+
     // styling dependencies
     if (styling === 'sass') {
         const sassSpinner = ora("setting up sass...").start();
 
-        let returnVal = readWriteFile(projectPath, 'next.config.js', 'sassOptions')
-        if (returnVal instanceof Error) {
-            sassSpinner.fail(`some error occurred while installing sass ${returnVal}`)
-        }
-        else {
-            sassCreattion(projectPath, 'styles')
+        // let returnVal = readWriteFile(projectPath, nextConfigFile, 'sassOptions')
+        // if (returnVal instanceof Error) {
+        //     sassSpinner.fail(`some error occurred while installing sass ${returnVal}`)
+        // }
+        // else {
+        //     sassCreattion(projectPath, 'app')
             packageManager === 'npm' ? await exec(`npm install --save-dev sass`) : await exec('yarn add sass --dev')
             sassSpinner.succeed('successfully added sass as dependency')
-        }
+        // }
     }
 
     // carousel / slider dependencies
     let sliderSpinner = null;
     if (sliderPackage !== 'none') {
-        sliderSpinner = ora("setting up sass...").start();
+        sliderSpinner = ora("setting up slider...").start();
     }
 
     if (sliderPackage === 'swiper') {
@@ -192,7 +261,25 @@ try {
 
     // }
 
-    lastBitHanlder(projectPath, 'next.config.js', 'lastBit');
+    // date dependencies
+    let dateSpinner = null;
+    if (datePackage !== 'none') dateSpinner = ora("setting up date package...").start();
+
+    if (datePackage == 'date-pack') {
+        packageManager === 'npm' ? await exec('npm install date-pack --save') : await exec('yarn add date-pack --dev');
+        dateSpinner.succeed('successfully added date-pack as dev dependency');
+    }
+    else if (datePackage == "moment") {
+        packageManager === 'npm' ? await exec('npm install moment --save') : await exec('yarn add moment --dev');
+        dateSpinner.succeed('successfully added moment as dev dependency');
+    }
+    else if (datePackage == "date-fns") {
+        packageManager === 'npm' ? await exec('npm install date-fns --save') : await exec('yarn add date-fns --dev');
+        dateSpinner.succeed('successfully added date-fns as dev dependency');
+    }
+
+
+    lastBitHanlder(projectPath, nextConfigFile, 'lastBit');
 
     const npmSpinner = ora("Installing dependencies...").start();
     if (packageManager === 'npm') {

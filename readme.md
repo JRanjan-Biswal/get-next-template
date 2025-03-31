@@ -1,6 +1,6 @@
 ## NEXT JS TEMPLATE GENERATOR
 
-The eaiest way to generate a template by using `create-next-template`. This cli tool help you to quickly set up a project with multiple dependency. 
+The eaiest way to generate a template by using `get-next-template`. This cli tool help you to quickly set up a project with multiple dependency. 
 
 
 ### important : use git-bash
@@ -9,7 +9,7 @@ The eaiest way to generate a template by using `create-next-template`. This cli 
 
 ### To get started use the following command :
 ```bash
-npm create-next-template <--app-name-->
+npm get-next-template <--app-name-->
 ```
 
 <br />

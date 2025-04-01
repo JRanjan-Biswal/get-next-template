@@ -1,6 +1,6 @@
 {
     "name": "get-next-template",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "private": false,
     "bin": {
         "get-next-template": "create-nextjs-template.mjs"

@@ -100,7 +100,7 @@ try {
     cleanSpinner.succeed();
 
     // await fontPromise()
-    firstBitHandler(projectPath, nextConfigFile);
+    // firstBitHandler(projectPath, nextConfigFile);
 
     const packageManager = await select({
         message: 'Select a package manager',
@@ -279,7 +279,7 @@ try {
     }
 
 
-    lastBitHanlder(projectPath, nextConfigFile, 'lastBit');
+    // lastBitHanlder(projectPath, nextConfigFile, 'lastBit');
 
     const npmSpinner = ora("Installing dependencies...").start();
     if (packageManager === 'npm') {

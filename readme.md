@@ -9,7 +9,7 @@ The eaiest way to generate a template by using `get-next-template`. This cli too
 
 ### To get started use the following command :
 ```bash
-npm get-next-template <--app-name-->
+npx get-next-template@latest <--app-name-->
 ```
 
 <br />

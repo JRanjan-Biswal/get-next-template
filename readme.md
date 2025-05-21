@@ -1,5 +1,8 @@
 ## NEXT JS TEMPLATE GENERATOR
 
+## Link to npm registry
+[NEXT JS TEMPLATE GENERATOR]([www.google.com](https://www.npmjs.com/package/get-next-template))
+
 The eaiest way to generate a template by using `get-next-template`. This cli tool help you to quickly set up a project with multiple dependency. 
 
 

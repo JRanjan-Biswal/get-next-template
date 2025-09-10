@@ -25,7 +25,13 @@
         "reactjs",
         "react",
         "template-generator",
-        "create-next-template"
+        "create-next-template",
+        "strapi",
+        "strapi-template",
+        "nextjs-template",
+        "nextjs-starter",
+        "nextjs-boilerplate",
+        "strapi-nextjs-template"
     ],
     "author": "JRanjan-Biswal",
     "license": "ISC",
